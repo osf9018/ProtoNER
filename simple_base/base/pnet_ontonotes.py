@@ -1,6 +1,7 @@
 from typing import Dict, List, Sequence, Iterable
 import itertools
 import logging
+import os
 
 from overrides import overrides
 
@@ -164,15 +165,16 @@ class PnetOntoDatasetReader(DatasetReader):
     @overrides
     def _read(self, file_path: str) -> Iterable[Instance]:
         # Here we just pass all the parameters to dataset reader
+        file_dir = os.path.dirname(file_path) + '/'
         if file_path[-8:] == 'test.txt':
-            data = snips_reader('test.txt', valid_class=self.valid_class, random_seed=self.random_seed,
-                                drop_empty=self.drop_empty)
+            data = snips_reader('test.txt', dataset_download_path=file_dir, valid_class=self.valid_class,
+                                random_seed=self.random_seed, drop_empty=self.drop_empty)
         elif file_path[-9:] == 'train.txt':
-            data = snips_reader('train.txt', valid_class=self.valid_class, random_seed=self.random_seed,
-                                drop_empty=self.drop_empty)
+            data = snips_reader('train.txt', dataset_download_path=file_dir, valid_class=self.valid_class,
+                                random_seed=self.random_seed, drop_empty=self.drop_empty)
         else:
-            data = snips_reader('valid.txt', valid_class=self.valid_class, random_seed=self.random_seed,
-                                drop_empty=self.drop_empty)
+            data = snips_reader('valid.txt', dataset_download_path=file_dir, valid_class=self.valid_class,
+                                random_seed=self.random_seed, drop_empty=self.drop_empty)
 
         for fields in data:
             # unzipping trick returns tuples, but our Fields need lists
